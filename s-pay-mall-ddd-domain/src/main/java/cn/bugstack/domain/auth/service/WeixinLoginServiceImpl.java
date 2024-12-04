@@ -1,7 +1,6 @@
 package cn.bugstack.domain.auth.service;
 
 import cn.bugstack.domain.auth.adapter.port.ILoginPort;
-import cn.bugstack.domain.auth.adapter.port.IWeixinApiService;
 
 import org.springframework.stereotype.Service;
 
@@ -20,17 +19,17 @@ public class WeixinLoginServiceImpl implements ILoginService {
 
     @Override
     public String createQrCodeTicket() throws Exception {
-        return iLoginPort.creatQrCodeTiket();
+        return iLoginPort.creatQrCodeTicket();
     }
 
     @Override
     public String checkLogin(String ticket) {
 
-        return openidToken.getIfPresent(ticket);
+        return iLoginPort.checkLogin(ticket);
     }
 
     @Override
-    public void saveLoginSate(String ticket, String openid) throws IOException {
-
+    public void saveLoginState(String ticket, String openid) throws IOException {
+        iLoginPort.saveLoginState(ticket,openid);
     }
 }

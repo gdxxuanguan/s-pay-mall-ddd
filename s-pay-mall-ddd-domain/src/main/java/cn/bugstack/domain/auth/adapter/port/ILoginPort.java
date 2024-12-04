@@ -1,7 +1,11 @@
 package cn.bugstack.domain.auth.adapter.port;
 
-public interface ILoginPort {
-    String creatQrCodeTiket() {
+import java.io.IOException;
 
-    }
+public interface ILoginPort {
+    String creatQrCodeTicket() throws IOException;
+
+    String checkLogin(String ticket);
+
+    void saveLoginState(String ticket, String openid) throws IOException;
 }

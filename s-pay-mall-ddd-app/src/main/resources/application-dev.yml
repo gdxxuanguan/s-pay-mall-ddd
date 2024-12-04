@@ -1,5 +1,5 @@
 server:
-  port: 8091
+  port: 8080
 
 # 线程池配置
 thread:
@@ -30,10 +30,25 @@ spring:
     connection-test-query: SELECT 1
   type: com.zaxxer.hikari.HikariDataSource
 
+  # redis配置
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 16379
+
 # MyBatis 配置【如需使用记得打开】
-#mybatis:
-#  mapper-locations: classpath:/mybatis/mapper/*.xml
-#  config-location:  classpath:/mybatis/config/mybatis-config.xml
+mybatis:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  config-location:  classpath:/mybatis/config/mybatis-config.xml
+
+# 微信公众号对接
+weixin:
+  config:
+    originalid: gh_e1246f479693
+    token: b8b6
+    app-id: wx742fd4cab6a98e49
+    app-secret: 705e00bd3dc1e0e81a20ba0d9a0e0795
+    template_id: _ctk4C_jsl3xynkpw5eT53qFBwNgEXOnzdVJtIRwW6E
 
 # 日志
 logging:
