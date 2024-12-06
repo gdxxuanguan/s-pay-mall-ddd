@@ -8,10 +8,12 @@ import cn.bugstack.domain.order.model.entity.PayOrderEntity;
 import cn.bugstack.domain.order.model.entity.ProductEntity;
 import cn.bugstack.domain.order.model.entity.ShopCarEntity;
 import cn.bugstack.domain.order.model.valobj.OrderStatusVO;
+import com.alipay.api.AlipayApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -50,10 +52,13 @@ public abstract class AbstractOrderService implements IOrderService{
                 OrderStatusVO.CREATE.equals(unpaidOrder.getOrderStatusVO())){
             log.info("创建订单-存在，存在未创建支付单订单，创建支付单开始 userId:{} productId:{} orderId:{}", shopCarEntity.getUserId(), shopCarEntity.getProductId(), unpaidOrder.getOrderId());
 //            PayOrder payOrder = doPrepayOrder(unpaidOrder.getProductId(), unpaidOrder.getProductName(), unpaidOrder.getOrderId(), unpaidOrder.getTotalAmount());
-//            return PayOrderRes.builder()
-//                    .orderId(payOrder.getOrderId())
-//                    .payUrl(payOrder.getPayUrl())
-//                    .build();
+
+            PayOrderEntity payOrderEntity=doPrepayOrder(shopCarEntity.getUserId(), shopCarEntity.getProductId(),
+                    unpaidOrder.getProductName(),unpaidOrder.getOrderId(),unpaidOrder.getTotalAmount());
+            return PayOrderEntity.builder()
+                    .orderId(payOrderEntity.getOrderId())
+                    .payUrl(payOrderEntity.getPayUrl())
+                    .build();
         }
         //2.首次下单,查询商品，创建订单
         ProductEntity productEntity=port.queryProductByProductId(shopCarEntity.getProductId());
@@ -67,11 +72,19 @@ public abstract class AbstractOrderService implements IOrderService{
                 .build();
         this.doSaveOrder(orderAggregate);
 
+        assert unpaidOrder != null;
+        PayOrderEntity payOrderEntity=doPrepayOrder(shopCarEntity.getUserId(), shopCarEntity.getProductId(),
+                unpaidOrder.getProductName(),unpaidOrder.getOrderId(),unpaidOrder.getTotalAmount());
+
         return PayOrderEntity.builder()
-                .orderId(orderId)
-                .payUrl("none")
+                .orderId(payOrderEntity.getOrderId())
+                .payUrl(payOrderEntity.getPayUrl())
                 .build();
+
+
     }
+
+    protected abstract PayOrderEntity doPrepayOrder(String userId, String productId, String productName, String orderId, BigDecimal totalAmount) throws AlipayApiException;
 
     protected abstract void doSaveOrder(CreateOrderAggregate orderAggregate);
 

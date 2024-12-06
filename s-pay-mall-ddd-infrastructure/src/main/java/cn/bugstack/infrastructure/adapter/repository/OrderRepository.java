@@ -3,6 +3,7 @@ package cn.bugstack.infrastructure.adapter.repository;
 import cn.bugstack.domain.order.adapter.repository.IOrderRepository;
 import cn.bugstack.domain.order.model.aggregate.CreateOrderAggregate;
 import cn.bugstack.domain.order.model.entity.OrderEntity;
+import cn.bugstack.domain.order.model.entity.PayOrderEntity;
 import cn.bugstack.domain.order.model.entity.ProductEntity;
 import cn.bugstack.domain.order.model.entity.ShopCarEntity;
 import cn.bugstack.domain.order.model.valobj.OrderStatusVO;
@@ -54,5 +55,16 @@ public class OrderRepository implements IOrderRepository {
                     .build();
         }
         return null;
+    }
+
+    @Override
+    public void updateOrderPayInfo(PayOrderEntity payOrderEntity) {
+        PayOrder payOrder=PayOrder.builder()
+                .userId(payOrderEntity.getUserId())
+                .orderId(payOrderEntity.getOrderId())
+                .status(payOrderEntity.getOrderStatus().getCode())
+                .payUrl(payOrderEntity.getPayUrl())
+                .build();
+        orderDao.updateOrderPayInfo(payOrder);
     }
 }
