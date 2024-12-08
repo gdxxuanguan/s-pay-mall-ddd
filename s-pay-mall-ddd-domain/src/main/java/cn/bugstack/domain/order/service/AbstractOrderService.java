@@ -64,17 +64,21 @@ public abstract class AbstractOrderService implements IOrderService{
         ProductEntity productEntity=port.queryProductByProductId(shopCarEntity.getProductId());
         String orderId= RandomStringUtils.randomNumeric(16);
 
-        OrderEntity orderEntity = CreateOrderAggregate.buildOrderEntity(productEntity.getProductId(), productEntity.getProductName());
+        log.info("创建订单，为新订单，创建支付单开始");
+
+        OrderEntity orderEntity = CreateOrderAggregate.buildOrderEntity(productEntity.getProductId(), productEntity.getProductName(),productEntity.getPrice());
         CreateOrderAggregate orderAggregate = CreateOrderAggregate.builder()
                 .userId(shopCarEntity.getUserId())
                 .productEntity(productEntity)
                 .orderEntity(orderEntity)
                 .build();
+
         this.doSaveOrder(orderAggregate);
 
-        assert unpaidOrder != null;
         PayOrderEntity payOrderEntity=doPrepayOrder(shopCarEntity.getUserId(), shopCarEntity.getProductId(),
-                unpaidOrder.getProductName(),unpaidOrder.getOrderId(),unpaidOrder.getTotalAmount());
+                orderEntity.getProductName(),orderEntity.getOrderId(),orderEntity.getTotalAmount());
+
+
 
         return PayOrderEntity.builder()
                 .orderId(payOrderEntity.getOrderId())
@@ -88,23 +92,5 @@ public abstract class AbstractOrderService implements IOrderService{
 
     protected abstract void doSaveOrder(CreateOrderAggregate orderAggregate);
 
-    @Override
-    public void changeOrderPaySuccess(String orderId) {
 
-    }
-
-    @Override
-    public List<String> queryNoPayNotifyOrder() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<String> queryTimeoutCloseOrderList() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean changeOrderClose(String orderId) {
-        return false;
-    }
 }

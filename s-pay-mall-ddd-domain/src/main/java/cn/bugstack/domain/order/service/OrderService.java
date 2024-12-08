@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -64,4 +66,23 @@ public class OrderService extends AbstractOrderService{
     }
 
 
+    @Override
+    public void changeOrderPaySuccess(String orderId) {
+        repository.changeOrderPaySuccess(orderId);
+    }
+
+    @Override
+    public List<String> queryNoPayNotifyOrder() {
+        return repository.queryNoPayNotifyOrder();
+    }
+
+    @Override
+    public List<String> queryTimeoutCloseOrderList() {
+        return repository.queryTimeoutCloseOrderList();
+    }
+
+    @Override
+    public boolean changeOrderClose(String orderId) {
+        return repository.changeOrderClose(orderId);
+    }
 }

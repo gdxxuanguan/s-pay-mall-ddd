@@ -88,6 +88,10 @@
             <groupId>cn.bugstack</groupId>
             <artifactId>s-pay-mall-ddd-infrastructure</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-jackson</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
